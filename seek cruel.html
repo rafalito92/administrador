@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Empréstimos</title>
+    <style>
+        /* Estilos globais */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #d4f8d4; /* Verde claro */
+        }
+
+        /* Tela de login */
+        #loginScreen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #d4f8d4; /* Verde claro */
+        }
+
+        #loginForm {
+            background-color: #155724; /* Verde escuro */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px;
+        }
+
+        #loginForm img {
+            width: 250px; /* Logotipo maior (250px) */
+            margin-bottom: 20px;
+        }
+
+        #loginForm input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        #loginForm button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #28a745; /* Verde */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #loginForm button:hover {
+            background-color: #218838; /* Verde mais escuro */
+        }
+
+        #loginError {
+            color: #ff6b6b; /* Vermelho claro */
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Esconde o conteúdo principal inicialmente */
+        #mainContent {
+            display: none; /* Inicialmente escondido */
+        }
+
+        /* Cabeçalho original */
+        .header {
+            background-color: #155724; /* Verde escuro */
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header img {
+            height: 50px;
+        }
+
+        .header h1 {
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .header button {
+            background-color: #dc3545; /* Vermelho */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .header button:hover {
+            background-color: #c82333; /* Vermelho mais escuro */
+        }
+
+        /* Estilos do sistema de empréstimos (seu código original) */
+        .container {
+            width: 50%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px 0px #aaa;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        /* Ajuste para campos de data lado a lado */
+        .data-container {
+            display: flex;
+            gap: 10px; /* Espaço entre os campos */
+        }
+
+        .data-container input {
+            width: calc(50% - 5px); /* Divide o espaço igualmente */
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .list-container {
+            margin-top: 40px;
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px 0px #aaa;
+        }
+
+        .emprestimo-item {
+            background: #f0fff0;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        .emprestimo-item p {
+            margin: 5px 0;
+        }
+
+        .remove-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .remove-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Tela de login -->
+    <div id="loginScreen">
+        <div id="loginForm">
+            <img src="logo_biblioteca.png" alt="Logo da Biblioteca">
+            <input type="text" id="username" placeholder="Usuário">
+            <input type="password" id="password" placeholder="Senha">
+            <button onclick="fazerLogin()">Entrar</button>
+            <p id="loginError">Usuário ou senha incorretos!</p>
+        </div>
+    </div>
+
+    <!-- Conteúdo principal (escondido até o login) -->
+    <div id="mainContent">
+        <!-- Cabeçalho original -->
+        <div class="header">
+            <img src="logo_biblioteca.png" alt="Logo Biblioteca">
+            <h1>Cadastro de Empréstimos</h1>
+            <img src="logo_escola.png" alt="Logo Escola">
+            <button onclick="sair()">Sair</button>
+        </div>
+
+        <!-- Formulário de cadastro -->
+        <div class="container">
+            <form id="emprestimoForm">
+                <label>Aluno(a):</label>
+                <input type="text" id="aluno" required>
+
+                <label>Série/Turma:</label>
+                <select id="serie_turma" required>
+                    <option value="">Selecione uma opção</option>
+                    <option value="1° ADMINISTRAÇÃO">1° ADMINISTRAÇÃO</option>
+                    <option value="1° LOGÍSTICA">1° LOGÍSTICA</option>
+                    <option value="1° DESENVOLVIMENTO">1° DESENVOLVIMENTO</option>
+                    <option value="1° INFORMÁTICA">1° INFORMÁTICA</option>
+                    <option value="1° ENFERMAGEM">1° ENFERMAGEM</option>
+                    <option value="2° ADMINISTRAÇÃO">2° ADMINISTRAÇÃO</option>
+                    <option value="2° LOGÍSTICA">2° LOGÍSTICA</option>
+                    <option value="2° DESENVOLVIMENTO">2° DESENVOLVIMENTO</option>
+                    <option value="2° INFORMÁTICA">2° INFORMÁTICA</option>
+                    <option value="2° ENFERMAGEM">2° ENFERMAGEM</option>
+                    <option value="3° ADMINISTRAÇÃO">3° ADMINISTRAÇÃO</option>
+                    <option value="3° LOGÍSTICA">3° LOGÍSTICA</option>
+                    <option value="3° DESENVOLVIMENTO">3° DESENVOLVIMENTO</option>
+                    <option value="3° INFORMÁTICA">3° INFORMÁTICA</option>
+                    <option value="3° ENFERMAGEM">3° ENFERMAGEM</option>
+                </select>
+
+                <label>Livro:</label>
+                <input type="text" id="livro" required>
+
+                <label>Editora:</label>
+                <input type="text" id="editora" required>
+
+                <!-- Campos de data lado a lado -->
+                <div class="data-container">
+                    <div>
+                        <label>Data de Empréstimo:</label>
+                        <input type="date" id="data_emprestimo">
+                    </div>
+                    <div>
+                        <label>Data de Devolução:</label>
+                        <input type="date" id="data_devolucao">
+                    </div>
+                </div>
+
+                <button type="button" onclick="salvarEmprestimo()">Cadastrar Empréstimo</button>
+                <button type="button" onclick="imprimirCartao()">Imprimir Cartão</button>
+            </form>
+        </div>
+
+        <!-- Lista de empréstimos -->
+        <div class="list-container">
+            <h2>Lista de Empréstimos</h2>
+            <div id="listaEmprestimos"></div>
+        </div>
+    </div>
+
+    <script>
+        // Função para fazer login
+        function fazerLogin() {
+            const usuario = document.getElementById('username').value;
+            const senha = document.getElementById('password').value;
+
+            // Verifica se o usuário e senha estão corretos
+            if (usuario === 'admin' && senha === 'admin') {
+                // Esconde a tela de login e mostra o conteúdo principal
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block'; // Exibe o conteúdo principal
+            } else {
+                // Exibe mensagem de erro
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        // Função para sair e voltar à tela de login
+        function sair() {
+            document.getElementById('mainContent').style.display = 'none'; // Oculta o conteúdo principal
+            document.getElementById('loginScreen').style.display = 'flex'; // Exibe a tela de login
+            document.getElementById('loginError').style.display = 'none'; // Limpa a mensagem de erro
+        }
+
+        // Funções do sistema de empréstimos (seu código original)
+        function carregarEmprestimos() {
+            const emprestimos = JSON.parse(localStorage.getItem('emprestimos')) || [];
+            const lista = document.getElementById('listaEmprestimos');
+            lista.innerHTML = ''; // Limpa a lista antes de carregar
+
+            emprestimos.forEach(emp => {
+                const item = document.createElement('div');
+                item.classList.add('emprestimo-item');
+                item.innerHTML = `
+                    <p><strong>Aluno:</strong> ${emp.aluno}</p>
+                    <p><strong>Série/Turma:</strong> ${emp.serie_turma}</p>
+                    <p><strong>Livro:</strong> ${emp.livro}</p>
+                    <p><strong>Editora:</strong> ${emp.editora}</p>
+                    <p><strong>Empréstimo:</strong> ${emp.data_emprestimo.split('-').reverse().join('/')}</p>
+                    <p><strong>Devolução:</strong> ${emp.data_devolucao.split('-').reverse().join('/')}</p>
+                    <button class="remove-btn" onclick="removerEmprestimo('${emp.aluno}-${emp.livro}')">Remover</button>
+                `;
+                lista.appendChild(item);
+            });
+        }
+
+        function salvarEmprestimo() {
+            const aluno = document.getElementById('aluno').value;
+            const serie_turma = document.getElementById('serie_turma').value;
+            const livro = document.getElementById('livro').value;
+            const editora = document.getElementById('editora').value;
+            const data_emprestimo = document.getElementById('data_emprestimo').value;
+            const data_devolucao = document.getElementById('data_devolucao').value;
+
+            const emprestimo = {
+                aluno,
+                serie_turma,
+                livro,
+                editora,
+                data_emprestimo,
+                data_devolucao
+            };
+
+            const emprestimos = JSON.parse(localStorage.getItem('emprestimos')) || [];
+            emprestimos.push(emprestimo);
+            localStorage.setItem('emprestimos', JSON.stringify(emprestimos));
+
+            carregarEmprestimos(); // Atualiza a lista na tela
+
+            // Limpa o formulário
+            document.getElementById('aluno').value = '';
+            document.getElementById('serie_turma').value = '';
+            document.getElementById('livro').value = '';
+            document.getElementById('editora').value = '';
+        }
+
+        function removerEmprestimo(chave) {
+            let emprestimos = JSON.parse(localStorage.getItem('emprestimos')) || [];
+            emprestimos = emprestimos.filter(emp => `${emp.aluno}-${emp.livro}` !== chave);
+            localStorage.setItem('emprestimos', JSON.stringify(emprestimos));
+            carregarEmprestimos(); // Atualiza a lista na tela
+        }
+
+        function imprimirCartao() {
+            const emprestimos = JSON.parse(localStorage.getItem('emprestimos')) || [];
+            if (emprestimos.length === 0) {
+                alert('Nenhum empréstimo cadastrado para imprimir.');
+                return;
+            }
+
+            // Pega o último empréstimo cadastrado
+            const ultimoEmprestimo = emprestimos[emprestimos.length - 1];
+
+            let janela = window.open('', '', 'width=300,height=200');
+            janela.document.write('<div style="text-align:center; border:1px solid #000; border-radius:10px; padding:5px; font-size:14px; font-family:Arial;">');
+            janela.document.write('<div style="background:#ccc; padding:5px; border-radius:10px; font-weight:bold;">CARTÃO DE EMPRÉSTIMO</div>');
+            janela.document.write('<img src="biblio cartão.png" alt="CARTAO" style="width:300px; opacity:0.2; position:absolute; left:50%; transform:translateX(-50%);">');
+            janela.document.write(`
+                <p><strong>Aluno:</strong> ${ultimoEmprestimo.aluno}</p>
+                <p><strong>Série/Turma:</strong> ${ultimoEmprestimo.serie_turma}</p>
+                <p><strong>Livro:</strong> ${ultimoEmprestimo.livro}</p>
+                <p><strong>Editora:</strong> ${ultimoEmprestimo.editora}</p>
+                <p><strong>Empréstimo:</strong> ${ultimoEmprestimo.data_emprestimo.split('-').reverse().join('/')}</p>
+                <p><strong>Devolução:</strong> ${ultimoEmprestimo.data_devolucao.split('-').reverse().join('/')}</p>
+            `);
+            janela.document.write('</div>');
+            janela.document.close();
+            janela.print();
+        }
+
+        // Configura as datas ao carregar a página
+        document.addEventListener("DOMContentLoaded", function() {
+            let hoje = new Date();
+            let dataEmprestimo = hoje.toISOString().split('T')[0];
+            document.getElementById('data_emprestimo').value = dataEmprestimo;
+
+            let dataDevolucao = new Date();
+            dataDevolucao.setDate(hoje.getDate() + 14);
+            let dataFinal = dataDevolucao.toISOString().split('T')[0];
+            document.getElementById('data_devolucao').value = dataFinal;
+
+            // Carrega os empréstimos salvos
+            carregarEmprestimos();
+        });
+    </script>
+</body>
+</html>
